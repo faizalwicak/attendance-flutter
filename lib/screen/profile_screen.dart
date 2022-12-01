@@ -1,6 +1,7 @@
 import 'package:attendance_flutter/api/user_service.dart';
 import 'package:attendance_flutter/constant/style_constant.dart';
 import 'package:attendance_flutter/screen/password_screen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -55,27 +56,38 @@ class _ProfileScreen extends State<ProfileScreen> {
                   : (value.user?.image != null
                       ? Center(
                           child: ClipOval(
-                            child: Image.network(
-                              '$baseUrl/images/${value.user?.image}',
+                            child: CachedNetworkImage(
                               width: 100,
                               height: 100,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, exception, stackTrace) {
-                                return Container(
-                                  width: 100,
-                                  height: 100,
-                                  color: const Color(0xFF35415A),
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    getInitials(value.user?.name ?? ""),
-                                    style: GoogleFonts.inter(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 32,
-                                    ),
+                              imageUrl: '$baseUrl/images/${value.user?.image}',
+                              placeholder: (context, url) => Container(
+                                width: 100,
+                                height: 100,
+                                color: const Color(0xFF35415A),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  getInitials(value.user?.name ?? ""),
+                                  style: GoogleFonts.inter(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 32,
                                   ),
-                                );
-                              },
+                                ),
+                              ),
+                              errorWidget: (context, url, err) => Container(
+                                width: 100,
+                                height: 100,
+                                color: const Color(0xFF35415A),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  getInitials(value.user?.name ?? ""),
+                                  style: GoogleFonts.inter(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 32,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         )

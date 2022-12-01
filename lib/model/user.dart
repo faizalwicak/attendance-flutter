@@ -28,4 +28,15 @@ class User {
       grade: Grade.fromJson(json['grade']),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'username': username,
+      'name': name,
+      'image': image,
+      'school': school?.toJson(),
+      'grade': grade?.toJson(),
+    };
+  }
 }

@@ -14,4 +14,13 @@ class Grade {
       schoolId: json['school_id'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'grade': grade,
+      'school_id': schoolId,
+    };
+  }
 }

@@ -34,4 +34,18 @@ class Attend {
       clockInStatus: json['clock_in_status'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'record_id': recordId,
+      'clock_in_time': clockInTime,
+      'clock_out_time': clockOutTime,
+      'clock_in_lat': clockInLat,
+      'clock_in_lng': clockInLng,
+      'clock_out_lat': clockOutLat,
+      'clock_out_lng': clockOutLng,
+      'clock_in_status': clockInStatus
+    };
+  }
 }

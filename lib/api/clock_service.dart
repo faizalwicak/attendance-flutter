@@ -35,9 +35,11 @@ Future<Result<String, String>> clockNow(
       final message = Message.fromJson(data);
       return Error(message.message ?? "");
     } else {
+      print(response.body);
       return Error(response.reasonPhrase.toString());
     }
   } catch (e) {
+    print(e);
     return const Error('Kesalahan Jaringan');
   }
 }

@@ -35,4 +35,14 @@ class Record {
       leave: leave,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'user_id': userId,
+      'date': date,
+      'attend': attend?.toJson(),
+      'leave': leave?.toJson()
+    };
+  }
 }

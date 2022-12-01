@@ -28,4 +28,14 @@ class School {
       clockOut: null,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'lat': lat.toString(),
+      'lng': lng.toString(),
+      'distance': distance,
+    };
+  }
 }

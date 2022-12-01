@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 class Leave {
   final int? id;
   final int? recordId;
@@ -13,7 +11,8 @@ class Leave {
     this.type,
     this.description,
     this.leaveStatus,
-});
+  });
+
   factory Leave.fromJson(Map<String, dynamic> json) {
     return Leave(
       id: json['id'],
@@ -22,5 +21,15 @@ class Leave {
       description: json['description'],
       leaveStatus: json['leave_status'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'record_id': recordId,
+      'type': type,
+      'description': description,
+      'leaveStatus': leaveStatus
+    };
   }
 }

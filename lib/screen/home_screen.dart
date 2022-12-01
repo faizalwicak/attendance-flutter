@@ -73,7 +73,7 @@ class _HomeScreen extends State<HomeScreen> {
         profileAppBar,
       ][_selectedIndex],
       body: [
-        const DashboardScreen(),
+        DashboardScreen(),
         const UsersScreen(),
         const NotificationScreen(),
         const ProfileScreen(),

@@ -14,4 +14,13 @@ class Quote {
       schoolId: json['school_id'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'message': message,
+      'active': active == true ? 1 : 0,
+      'school_id': schoolId,
+    };
+  }
 }
