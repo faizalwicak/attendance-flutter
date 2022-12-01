@@ -12,7 +12,7 @@ Future<Result<String, List<RecordFriend>>> getRecordFriend(String jwt) async {
     final response = await http.get(
       uri,
       headers: {'Accept': 'application/json', 'Authorization': 'Bearer $jwt'},
-    );
+    ).timeout(httpTimeout);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       List<RecordFriend> recordFriendArr = [];

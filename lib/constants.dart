@@ -23,3 +23,5 @@ const monthName = [
   "Nov",
   "Des",
 ];
+
+const httpTimeout = Duration(seconds: 5);

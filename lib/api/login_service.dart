@@ -13,7 +13,7 @@ Future<Result<String, String>> login(String username, String password) async {
       uri,
       body: {'username': username, 'password': password},
       headers: {'Accept': 'application/json'},
-    );
+    ).timeout(httpTimeout);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       var prefs = await SharedPreferences.getInstance();

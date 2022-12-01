@@ -45,7 +45,7 @@ class AuthNotifier extends ChangeNotifier {
       } else if (value.getError() == '401') {
         _accessToken = "";
       } else {
-        // print(value.getError());
+        print(value.getError());
       }
       notifyListeners();
     });
@@ -60,7 +60,6 @@ class AuthNotifier extends ChangeNotifier {
       } else {
         _clockStatus = null;
       }
-      print(_clockStatus?.attend?.clockInTime);
       notifyListeners();
     });
   }

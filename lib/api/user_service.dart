@@ -12,7 +12,7 @@ Future<Result<String, User>> getUserProfile(String jwt) async {
     final response = await http.get(
       uri,
       headers: {'Accept': 'application/json', 'Authorization': 'Bearer $jwt'},
-    );
+    ).timeout(httpTimeout);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       return Success(User.fromJson(data));
@@ -41,7 +41,7 @@ Future<Result<String, String>> changePassword(String jwt, String oldPassword,
         're-password': rePassword
       },
       headers: {'Accept': 'application/json', 'Authorization': 'Bearer $jwt'},
-    );
+    ).timeout(httpTimeout);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       return Success(data['message']);
@@ -63,11 +63,13 @@ Future<Result<String, String>> changeProfilePicture(
   try {
     final uri = Uri.parse('$baseApiUrl/profile-image');
     final request = http.MultipartRequest('POST', uri);
-    request.headers
-        .addAll({'Accept': 'application/json', 'Authorization': 'Bearer $jwt'});
+    request.headers.addAll({
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $jwt',
+    });
     request.files.add(await http.MultipartFile.fromPath('image', imagePath));
 
-    final responseStream = await request.send();
+    final responseStream = await request.send().timeout(httpTimeout);
     final response = await http.Response.fromStream(responseStream);
 
     if (response.statusCode == 200) {

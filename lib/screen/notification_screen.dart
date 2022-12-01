@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 AppBar notificationAppBar = AppBar(
   title: const Text('Pengumuman'),
   centerTitle: true,
@@ -13,8 +12,10 @@ class NotificationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (1==1) {
-      return Center(child: Text('Belum ada notifikasi.', style: GoogleFonts.inter()),);
+    if (1 == 1) {
+      return Center(
+        child: Text('Belum ada pengumuman.', style: GoogleFonts.inter()),
+      );
     }
     return ListView.builder(
       itemCount: 20,
@@ -59,5 +60,4 @@ class NotificationScreen extends StatelessWidget {
       },
     );
   }
-
 }

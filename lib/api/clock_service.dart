@@ -11,7 +11,11 @@ const clockInType = "clock-in";
 const clockOutType = "clock-out";
 
 Future<Result<String, String>> clockNow(
-    String jwt, String clockType, double lat, double lng) async {
+  String jwt,
+  String clockType,
+  double lat,
+  double lng,
+) async {
   try {
     final uri = Uri.parse('$baseApiUrl/$clockType');
     final response = await http.post(
@@ -19,10 +23,9 @@ Future<Result<String, String>> clockNow(
       body: {
         "lat": lat.toString(),
         "lng": lng.toString(),
-        // "type": clockType,
       },
       headers: {'Accept': 'application/json', 'Authorization': 'Bearer $jwt'},
-    );
+    ).timeout(httpTimeout);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       final message = Message.fromJson(data);
@@ -45,7 +48,7 @@ Future<Result<String, Record?>> getClockStatus(String jwt) async {
     final response = await http.get(
       uri,
       headers: {'Accept': 'application/json', 'Authorization': 'Bearer $jwt'},
-    );
+    ).timeout(httpTimeout);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       return Success(Record.fromJson(data));
@@ -59,14 +62,17 @@ Future<Result<String, Record?>> getClockStatus(String jwt) async {
 }
 
 Future<Result<String, List<Record?>>> getClockHistory(
-    String jwt, int year, int month) async {
+  String jwt,
+  int year,
+  int month,
+) async {
   try {
     String params = "?year=$year&month=$month";
     final uri = Uri.parse('$baseApiUrl/clock-history$params');
     final response = await http.get(
       uri,
       headers: {'Accept': 'application/json', 'Authorization': 'Bearer $jwt'},
-    );
+    ).timeout(httpTimeout);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       List<Record?> responseArray = [];

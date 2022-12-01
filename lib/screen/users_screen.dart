@@ -16,13 +16,13 @@ class UsersScreen extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() => _UsersScreen();
-
 }
 
 class _UsersScreen extends State<UsersScreen> {
   List<RecordFriend> items = [];
   String jwt = "";
   bool isLoading = false;
+  var httpError = "";
 
   @override
   void initState() {
@@ -41,7 +41,7 @@ class _UsersScreen extends State<UsersScreen> {
       if (response.isSuccess()) {
         items = response.getSuccess() ?? [];
       } else {
-
+        httpError = response.getError() ?? "";
       }
       setState(() {
         isLoading = false;
@@ -54,14 +54,19 @@ class _UsersScreen extends State<UsersScreen> {
     if (isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
+    if (httpError != "") {
+      return Center(child: Text(httpError));
+    }
     return ListView.builder(
       itemCount: items.length,
       itemBuilder: (context, index) {
         var status = '';
-        if (items[index].records?.length == 0) {
+        if ((items[index].records ?? []).isEmpty) {
           status = 'Belum Hadir';
         } else if (items[index].records?[0]?.leave != null) {
-          status = items[index].records![0]!.leave!.type == "SICK" ? "Sakit" : "Izin";
+          status = items[index].records![0]!.leave!.type == "SICK"
+              ? "Sakit"
+              : "Izin";
         } else {
           status = 'Hadir';
         }
@@ -90,7 +95,11 @@ class _UsersScreen extends State<UsersScreen> {
                       ],
                     ),
                   ),
-                  Text(status, style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w400),),
+                  Text(
+                    status,
+                    style: GoogleFonts.inter(
+                        fontSize: 12, fontWeight: FontWeight.w400),
+                  ),
                 ],
               ),
             ),

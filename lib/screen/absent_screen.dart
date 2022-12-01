@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:attendance_flutter/api/absent_service.dart';
 import 'package:attendance_flutter/util/dialog_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constant/style_constant.dart';
@@ -22,16 +25,17 @@ class _AbsentScreen extends State<AbsentScreen> {
   bool _isLoadingSubmit = false;
 
   String absentType = "";
+  String imagePath = "";
   DateTime selectedDate = DateTime.now();
-  TextEditingController _descriptionController = TextEditingController();
-  TextEditingController _dateController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
 
   String jwt = "";
   @override
   void initState() {
     super.initState();
 
-    SharedPreferences.getInstance().then((prefs){
+    SharedPreferences.getInstance().then((prefs) {
       jwt = prefs.getString("access_token") ?? "";
     });
   }
@@ -90,11 +94,17 @@ class _AbsentScreen extends State<AbsentScreen> {
             items: [
               DropdownMenuItem<String>(
                 value: "SICK",
-                child: Text("Sakit", style: GoogleFonts.inter(),),
+                child: Text(
+                  "Sakit",
+                  style: GoogleFonts.inter(),
+                ),
               ),
               DropdownMenuItem<String>(
                 value: "LEAVE",
-                child: Text("Izin", style: GoogleFonts.inter(),),
+                child: Text(
+                  "Izin",
+                  style: GoogleFonts.inter(),
+                ),
               )
             ],
             style: inputTextStyle,
@@ -127,9 +137,33 @@ class _AbsentScreen extends State<AbsentScreen> {
             textAlign: TextAlign.start,
           ),
           const SizedBox(height: 10),
-          TextFormField(
-            style: inputTextStyle,
-            decoration: inputDecoration,
+          imagePath != ""
+              ? Container(
+                  color: Colors.grey[100],
+                  child: Image.file(
+                    File(imagePath),
+                    height: 200,
+                    width: double.infinity,
+                    fit: BoxFit.contain,
+                  ),
+                )
+              : Container(),
+          const SizedBox(height: 5),
+          OutlinedButton(
+            onPressed: () {
+              final ImagePicker picker = ImagePicker();
+              picker.pickImage(source: ImageSource.gallery).then((image) {
+                if (image != null) {
+                  setState(() {
+                    imagePath = image.path;
+                  });
+                }
+              });
+            },
+            child: Text(
+              imagePath != "" ? 'Ganti Foto' : 'Tambah Foto',
+              style: GoogleFonts.inter(),
+            ),
           ),
           const SizedBox(height: 10),
           ElevatedButton(
@@ -141,29 +175,55 @@ class _AbsentScreen extends State<AbsentScreen> {
             onPressed: _isLoadingSubmit
                 ? null
                 : () {
-                    setState(() {
-                      _isLoadingSubmit = true;
-                    });
-                    addAbsent(jwt, absentType, _descriptionController.text, _dateController.text).then((response) {
-                      if (response.isSuccess()) {
-                        displayMessageDialog(context, response.getSuccess().toString(), () {
-                          // Navigator.popUntil(
-                          //   context,
-                          //       (route) {
-                          //       print(route.settings.name);
-                          //         return route.isFirst;
-                          //       },
-                          // );
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                        });
-                      } else {
-                        displayMessageDialog(context, response.getError().toString());
-                      }
+                    List<String> errors = [];
+
+                    if (_dateController.text == "") {
+                      errors.add("Tanggal izin tidak boleh kosong.");
+                    }
+
+                    if (absentType == "") {
+                      errors.add("Jenis Izin tidak boleh kosong.");
+                    }
+
+                    if (_descriptionController.text == "") {
+                      errors.add("Keterangan tidak boleh kosong.");
+                    }
+
+                    if (imagePath == "") {
+                      errors.add("Foto bukti tidak boleh kosong.");
+                    }
+
+                    if (errors.isNotEmpty) {
+                      displayMessageDialog(context, errors[0]);
+                    } else {
                       setState(() {
-                        _isLoadingSubmit = false;
+                        _isLoadingSubmit = true;
                       });
-                    });
+                      addAbsent(
+                        jwt,
+                        absentType,
+                        _descriptionController.text,
+                        _dateController.text,
+                        imagePath,
+                      ).then((response) {
+                        if (response.isSuccess()) {
+                          displayMessageDialog(
+                            context,
+                            response.getSuccess().toString(),
+                            () {
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                            },
+                          );
+                        } else {
+                          displayMessageDialog(
+                              context, response.getError().toString());
+                        }
+                        setState(() {
+                          _isLoadingSubmit = false;
+                        });
+                      });
+                    }
                   },
             child: _isLoadingSubmit
                 ? const SizedBox(
