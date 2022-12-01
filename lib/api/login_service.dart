@@ -1,14 +1,14 @@
 import 'dart:convert';
 
-import 'package:multiple_result/multiple_result.dart';
 import 'package:http/http.dart' as http;
+import 'package:multiple_result/multiple_result.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants.dart';
 
 Future<Result<String, String>> login(String username, String password) async {
   try {
-    final uri = Uri.parse('$baseUrl/login');
+    final uri = Uri.parse('$baseApiUrl/login');
     final response = await http.post(
       uri,
       body: {'username': username, 'password': password},

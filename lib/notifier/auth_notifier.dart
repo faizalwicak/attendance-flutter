@@ -34,19 +34,23 @@ class AuthNotifier extends ChangeNotifier {
 
   void loadUser() {
     if (_user == null) {
-      getUserProfile(_accessToken ?? "").then((value) {
-        if (value.isSuccess()) {
-          _user = value.getSuccess();
-        } else if (value.getError() == '401') {
-          _accessToken = "";
-        } else {
-          // print(value.getError());
-        }
-        notifyListeners();
-      });
-      loadClockStatus();
-      loadQuote();
+      freshLoadUser();
     }
+  }
+
+  void freshLoadUser() {
+    getUserProfile(_accessToken ?? "").then((value) {
+      if (value.isSuccess()) {
+        _user = value.getSuccess();
+      } else if (value.getError() == '401') {
+        _accessToken = "";
+      } else {
+        // print(value.getError());
+      }
+      notifyListeners();
+    });
+    loadClockStatus();
+    loadQuote();
   }
 
   void loadClockStatus() {

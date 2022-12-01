@@ -1,15 +1,15 @@
 import 'package:attendance_flutter/screen/absent_history_screen.dart';
 import 'package:attendance_flutter/screen/absent_screen.dart';
 import 'package:attendance_flutter/screen/clock_history_screen.dart';
-import 'package:attendance_flutter/screen/leave_history_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '../api/clock_service.dart';
 import '../constant/color_constant.dart';
+import '../constants.dart';
 import '../notifier/auth_notifier.dart';
+import '../util/string_helper.dart';
 import 'location_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -124,13 +124,55 @@ class DashboardScreen extends StatelessWidget {
                         Positioned(
                           top: 0,
                           bottom: 0,
-                          child: ClipOval(
-                            child: Image.asset(
-                              'assets/images/image_profile.png',
+                          child: Consumer<AuthNotifier>(
+                              builder: (context, notifier, child) {
+                            if (notifier.user?.image != null) {
+                              return Center(
+                                child: ClipOval(
+                                  child: Image.network(
+                                    '$baseUrl/images/${notifier.user?.image}',
+                                    width: 60,
+                                    height: 60,
+                                    fit: BoxFit.cover,
+                                    errorBuilder:
+                                        (context, exception, stackTrace) {
+                                      return Container(
+                                        width: 60,
+                                        height: 60,
+                                        color: const Color(0xFF35415A),
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          getInitials(
+                                              notifier.user?.name ?? ""),
+                                          style: GoogleFonts.inter(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 32,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              );
+                            }
+
+                            return SizedBox(
                               height: 60,
                               width: 60,
-                            ),
-                          ),
+                              child: CircleAvatar(
+                                backgroundColor: const Color(0xFF35415A),
+                                child: Text(
+                                  getInitials(notifier.user?.name ?? ""),
+                                  style: GoogleFonts.inter(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 24,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }),
                         ),
                       ],
                     ),
@@ -276,19 +318,25 @@ class DashboardScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Keterangan', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w500),),
-                    const SizedBox(
-                      height: 10
+                    Text(
+                      'Keterangan',
+                      style: GoogleFonts.inter(
+                          fontSize: 12, fontWeight: FontWeight.w500),
                     ),
+                    const SizedBox(height: 10),
                     Consumer<AuthNotifier>(
                       builder: (context, notifier, child) {
                         var message = [];
                         if (notifier.clockStatus != null) {
-                          if (notifier.clockStatus!.attend?.clockInTime != null) {
-                            message.add("Anda sudah presensi masuk pada ${notifier.clockStatus!.attend!.clockInTime}");
+                          if (notifier.clockStatus!.attend?.clockInTime !=
+                              null) {
+                            message.add(
+                                "Anda sudah presensi masuk pada ${notifier.clockStatus!.attend!.clockInTime}");
                           }
-                          if (notifier.clockStatus!.attend?.clockOutTime != null) {
-                            message.add("Anda sudah presensi pulang pada ${notifier.clockStatus!.attend!.clockOutTime}");
+                          if (notifier.clockStatus!.attend?.clockOutTime !=
+                              null) {
+                            message.add(
+                                "Anda sudah presensi pulang pada ${notifier.clockStatus!.attend!.clockOutTime}");
                           }
                           if (message.length == 0) {
                             message.add("Anda belum presensi.");

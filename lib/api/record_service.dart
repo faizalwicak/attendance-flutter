@@ -1,16 +1,14 @@
-
 import 'dart:convert';
 
 import 'package:attendance_flutter/model/record_friend.dart';
-import 'package:multiple_result/multiple_result.dart';
 import 'package:http/http.dart' as http;
+import 'package:multiple_result/multiple_result.dart';
 
 import '../constants.dart';
-import '../model/quote.dart';
 
 Future<Result<String, List<RecordFriend>>> getRecordFriend(String jwt) async {
   try {
-    final uri = Uri.parse('$baseUrl/record-friend');
+    final uri = Uri.parse('$baseApiUrl/record-friend');
     final response = await http.get(
       uri,
       headers: {'Accept': 'application/json', 'Authorization': 'Bearer $jwt'},
@@ -30,4 +28,3 @@ Future<Result<String, List<RecordFriend>>> getRecordFriend(String jwt) async {
     return const Error('Kesalahan Jaringan');
   }
 }
-

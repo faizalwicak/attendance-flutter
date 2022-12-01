@@ -1,7 +1,8 @@
 import 'dart:convert';
 
-import 'package:multiple_result/multiple_result.dart';
 import 'package:http/http.dart' as http;
+import 'package:multiple_result/multiple_result.dart';
+
 import '../constants.dart';
 import '../model/message.dart';
 import '../model/record.dart';
@@ -12,7 +13,7 @@ const clockOutType = "clock-out";
 Future<Result<String, String>> clockNow(
     String jwt, String clockType, double lat, double lng) async {
   try {
-    final uri = Uri.parse('$baseUrl/$clockType');
+    final uri = Uri.parse('$baseApiUrl/$clockType');
     final response = await http.post(
       uri,
       body: {
@@ -38,10 +39,9 @@ Future<Result<String, String>> clockNow(
   }
 }
 
-
 Future<Result<String, Record?>> getClockStatus(String jwt) async {
   try {
-    final uri = Uri.parse('$baseUrl/clock-status');
+    final uri = Uri.parse('$baseApiUrl/clock-status');
     final response = await http.get(
       uri,
       headers: {'Accept': 'application/json', 'Authorization': 'Bearer $jwt'},
@@ -58,11 +58,11 @@ Future<Result<String, Record?>> getClockStatus(String jwt) async {
   }
 }
 
-
-Future<Result<String, List<Record?>>> getClockHistory(String jwt, int year, int month) async {
+Future<Result<String, List<Record?>>> getClockHistory(
+    String jwt, int year, int month) async {
   try {
     String params = "?year=$year&month=$month";
-    final uri = Uri.parse('$baseUrl/clock-history$params');
+    final uri = Uri.parse('$baseApiUrl/clock-history$params');
     final response = await http.get(
       uri,
       headers: {'Accept': 'application/json', 'Authorization': 'Bearer $jwt'},

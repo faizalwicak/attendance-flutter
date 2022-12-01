@@ -1,25 +1,19 @@
-
 import 'dart:convert';
 
-import 'package:multiple_result/multiple_result.dart';
 import 'package:http/http.dart' as http;
+import 'package:multiple_result/multiple_result.dart';
 
 import '../constants.dart';
-import '../model/absent.dart';
 import '../model/message.dart';
 import '../model/record.dart';
 
 Future<Result<String, String>> addAbsent(
     String jwt, String absentType, String description, String date) async {
   try {
-    final uri = Uri.parse('$baseUrl/leave');
+    final uri = Uri.parse('$baseApiUrl/leave');
     final response = await http.post(
       uri,
-      body: {
-        "type": absentType,
-        "date": date,
-        "description": description
-      },
+      body: {"type": absentType, "date": date, "description": description},
       headers: {'Accept': 'application/json', 'Authorization': 'Bearer $jwt'},
     );
     if (response.statusCode == 200) {
@@ -40,7 +34,7 @@ Future<Result<String, String>> addAbsent(
 
 Future<Result<String, List<Record>>> getAbsentHistory(String jwt) async {
   try {
-    final uri = Uri.parse('$baseUrl/leave');
+    final uri = Uri.parse('$baseApiUrl/leave');
     final response = await http.get(
       uri,
       headers: {'Accept': 'application/json', 'Authorization': 'Bearer $jwt'},
