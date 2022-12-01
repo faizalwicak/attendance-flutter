@@ -13,6 +13,7 @@ void displayMessageDialog(BuildContext context, String text,
     [Function? okCallback]) {
   showDialog(
     context: context,
+    barrierDismissible: false,
     builder: (context) {
       return AlertDialog(
         content: Text(text),

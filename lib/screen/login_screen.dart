@@ -2,6 +2,7 @@ import 'package:attendance_flutter/constant/color_constant.dart';
 import 'package:attendance_flutter/constant/style_constant.dart';
 import 'package:attendance_flutter/util/dialog_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../api/login_service.dart';
@@ -23,131 +24,108 @@ class _LoginScreen extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: primarySwatch[200],
+      backgroundColor: const Color(0xffF2F2F4),
       body: SafeArea(
-        child: ListView(
+        child: Column(
           children: [
-            const SizedBox(
-              height: 50,
-            ),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              child: Card(
-                elevation: 1,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                child: Container(
+            Expanded(
+              child: Stack(children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
                   width: double.infinity,
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 20,
-                  ),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          "Selamat Datang!",
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: titleTextColor,
-                            fontWeight: FontWeight.w500,
-                          ),
+                      Text(
+                        'DIGITAL ABSENSI',
+                        style: GoogleFonts.inter(
+                          color: const Color(0xff336BB0),
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                       const SizedBox(height: 5),
-                      const Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          "Masuk untuk melanjutkan!",
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: subtitleTextColor,
-                            fontWeight: FontWeight.w400,
-                          ),
+                      Text(
+                        'SMAN 1 SLEMAN',
+                        style: GoogleFonts.inter(
+                          color: const Color(0xff336BB0),
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
                         ),
-                      ),
-                      const SizedBox(height: 40),
-                      const Text(
-                        'Username',
-                        style: labelTextStyle,
-                        textAlign: TextAlign.start,
-                      ),
-                      const SizedBox(height: 10),
-                      TextField(
-                        keyboardType: TextInputType.name,
-                        controller: _usernameController,
-                        style: inputTextStyle,
-                        decoration: const InputDecoration(
-                          isDense: true,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            borderSide: BorderSide(
-                              color: Color(0xffe2e5e8),
-                              width: 2,
-                            ),
-                          ),
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 15,
-                            vertical: 10,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      const Text(
-                        'Password',
-                        style: labelTextStyle,
-                        textAlign: TextAlign.start,
-                      ),
-                      const SizedBox(height: 10),
-                      TextField(
-                        keyboardType: TextInputType.name,
-                        controller: _passwordController,
-                        style: inputTextStyle,
-                        obscureText: true,
-                        obscuringCharacter: '●',
-                        decoration: const InputDecoration(
-                          isDense: true,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            borderSide: BorderSide(
-                              color: Color(0xffe2e5e8),
-                              width: 2,
-                            ),
-                          ),
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 15,
-                            vertical: 10,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(40),
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                          ),
-                        ),
-                        onPressed: _isLoading
-                            ? null
-                            : () {
-                                actoinLogin();
-                              },
-                        child: _isLoading
-                            ? const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(),
-                              )
-                            : const Text('Masuk'),
                       ),
                     ],
                   ),
                 ),
+                Positioned(
+                  right: 0,
+                  child: Image.asset('assets/images/image_login_1.png'),),
+              ],),
+            ),
+            Container(
+              decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  )),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  Text(
+                    'Log in',
+                    style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18,
+                    ),
+                    textAlign: TextAlign.start,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    'Username',
+                    style: labelTextStyle,
+                    textAlign: TextAlign.start,
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    keyboardType: TextInputType.name,
+                    controller: _usernameController,
+                    style: inputTextStyle,
+                    decoration: inputDecoration,
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Password',
+                    style: labelTextStyle,
+                    textAlign: TextAlign.start,
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    keyboardType: TextInputType.name,
+                    controller: _passwordController,
+                    style: inputTextStyle,
+                    obscureText: true,
+                    obscuringCharacter: '●',
+                    decoration: inputDecoration,
+                  ),
+                  const SizedBox(height: 20),
+                  roundElevatedButton(
+                    title: 'Masuk',
+                    isLoading: _isLoading,
+                    onClick: () {
+                      actionLogin();
+                    },
+                  ),
+                  const SizedBox(height: 40),
+                ],
               ),
             ),
           ],
@@ -156,7 +134,7 @@ class _LoginScreen extends State<LoginScreen> {
     );
   }
 
-  void actoinLogin() {
+  void actionLogin() {
     setState(() {
       _isLoading = true;
     });

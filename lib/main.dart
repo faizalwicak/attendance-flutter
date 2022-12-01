@@ -2,6 +2,7 @@ import 'package:attendance_flutter/constant/color_constant.dart';
 import 'package:attendance_flutter/screen/home_screen.dart';
 import 'package:attendance_flutter/screen/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:month_year_picker/month_year_picker.dart';
 import 'package:provider/provider.dart';
 
 import 'notifier/auth_notifier.dart';
@@ -25,6 +26,9 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: createMaterialColor(primaryColor),
         ),
+        localizationsDelegates: const [
+          MonthYearPickerLocalizations.delegate,
+        ],
         home: Consumer<AuthNotifier>(
           builder: (context, value, child) {
             if (value.accessToken == null) {

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
-const Color primaryColor = Color(0xff1f58c7);
+const Color primaryColor = Color(0xff336BB0);
 const Color backgroundColor = Color(0xffF8F9FB);
 const Color borderCardColor = Color.fromARGB(255, 239, 240, 242);
 const Color titleTextColor = Color(0xff35415a);
 const Color subtitleTextColor = Color(0xffa4a9b4);
-const Color inputTextColor = Color(0xff545965);
+const Color inputTextColor = Color(0xff17233D);
+const Color inputPlaceholderTextColor = Color(0xff757575);
+const Color bottomBarUnselectedColor = Color(0xff808695);
 
 MaterialColor primarySwatch = createMaterialColor(primaryColor);
 

@@ -1,24 +1,24 @@
+
 import 'dart:convert';
 
 import 'package:multiple_result/multiple_result.dart';
 import 'package:http/http.dart' as http;
+
 import '../constants.dart';
+import '../model/absent.dart';
 import '../model/message.dart';
 import '../model/record.dart';
 
-const clockInType = "clock-in";
-const clockOutType = "clock-out";
-
-Future<Result<String, String>> clockNow(
-    String jwt, String clockType, double lat, double lng) async {
+Future<Result<String, String>> addAbsent(
+    String jwt, String absentType, String description, String date) async {
   try {
-    final uri = Uri.parse('$baseUrl/$clockType');
+    final uri = Uri.parse('$baseUrl/leave');
     final response = await http.post(
       uri,
       body: {
-        "lat": lat.toString(),
-        "lng": lng.toString(),
-        // "type": clockType,
+        "type": absentType,
+        "date": date,
+        "description": description
       },
       headers: {'Accept': 'application/json', 'Authorization': 'Bearer $jwt'},
     );
@@ -38,46 +38,20 @@ Future<Result<String, String>> clockNow(
   }
 }
 
-
-Future<Result<String, Record?>> getClockStatus(String jwt) async {
+Future<Result<String, List<Record>>> getAbsentHistory(String jwt) async {
   try {
-    final uri = Uri.parse('$baseUrl/clock-status');
+    final uri = Uri.parse('$baseUrl/leave');
     final response = await http.get(
       uri,
       headers: {'Accept': 'application/json', 'Authorization': 'Bearer $jwt'},
     );
     if (response.statusCode == 200) {
+      List<Record> absentList = [];
       final data = json.decode(response.body);
-      return Success(Record.fromJson(data));
-    } else {
-      return Error(response.reasonPhrase.toString());
-    }
-  } catch (e) {
-    print(e);
-    return const Error('Kesalahan Jaringan');
-  }
-}
-
-
-Future<Result<String, List<Record?>>> getClockHistory(String jwt, int year, int month) async {
-  try {
-    String params = "?year=$year&month=$month";
-    final uri = Uri.parse('$baseUrl/clock-history$params');
-    final response = await http.get(
-      uri,
-      headers: {'Accept': 'application/json', 'Authorization': 'Bearer $jwt'},
-    );
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      List<Record?> responseArray = [];
       for (var i in data) {
-        if (i != null) {
-          responseArray.add(Record.fromJson(i));
-        } else {
-          responseArray.add(null);
-        }
+        absentList.add(Record.fromJson(i));
       }
-      return Success(responseArray);
+      return Success(absentList);
     } else {
       return Error(response.reasonPhrase.toString());
     }

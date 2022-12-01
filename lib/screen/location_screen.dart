@@ -1,17 +1,20 @@
+import 'dart:async';
+
 import 'package:attendance_flutter/api/clock_service.dart';
 import 'package:attendance_flutter/notifier/auth_notifier.dart';
 import 'package:attendance_flutter/util/dialog_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
 import '../model/school.dart';
 
 class LocationScreen extends StatefulWidget {
-  final String clockType;
-  const LocationScreen(this.clockType, {super.key});
+  const LocationScreen({super.key});
 
   @override
   State<StatefulWidget> createState() => _LocationScreen();
@@ -25,10 +28,30 @@ class _LocationScreen extends State<LocationScreen> {
   LatLng? _currentLocation;
   final MapController _controller = MapController();
 
+  String _timeString = "--:--";
+  String _dateString = "--/--/----";
+
   @override
   void initState() {
     super.initState();
     _loadLocation();
+    Timer.periodic(const Duration(seconds: 1), (Timer t) => _getTime());
+  }
+
+  void _getTime() {
+    final DateTime now = DateTime.now();
+    setState(() {
+      _timeString = _formatTime(now);
+      _dateString = _formatDate(now);
+    });
+  }
+
+  String _formatTime(DateTime dateTime) {
+    return DateFormat('HH:mm').format(dateTime);
+  }
+
+  String _formatDate(DateTime dateTime) {
+    return DateFormat('dd/MM/yyyy').format(dateTime);
   }
 
   @override
@@ -36,123 +59,245 @@ class _LocationScreen extends State<LocationScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.clockType == clockInType
-              ? 'PRESENSI MASUK'
-              : 'PRESENSI PULANG',
+          "Presensi",
+          style: GoogleFonts.inter(),
         ),
+        elevation: 0,
       ),
       body: Column(
         children: [
           Expanded(
             child: Column(
               children: [
-                SizedBox(
-                  height: 200,
-                  child: Consumer<AuthNotifier>(
+                Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 20,
+                  ),
+                  height: 300,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Consumer<AuthNotifier>(
                       builder: (context, notifier, child) {
-                    if (notifier.user == null) {
-                      return Container(
-                        color: Colors.grey[100],
-                        alignment: Alignment.center,
-                        child: const Text("Tidak ada koneksi internet"),
-                      );
-                    }
-                    final School? school = notifier.user!.school;
-                    final schoolLocation =
-                        LatLng(school?.lat ?? 0, school?.lng ?? 0);
-                    return FlutterMap(
-                      mapController: _controller,
-                      options: MapOptions(center: schoolLocation, zoom: 18),
-                      nonRotatedChildren: [
-                        AttributionWidget.defaultWidget(
-                          source: 'OpenStreetMap contributors',
-                          onSourceTapped: null,
-                        ),
-                      ],
-                      children: [
-                        TileLayer(
-                          urlTemplate:
-                              'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                          userAgentPackageName: 'com.example.app',
-                        ),
-                        CircleLayer(
-                          circles: [
-                            CircleMarker(
-                              point: schoolLocation,
-                              radius: school?.distance?.toDouble() ?? 50,
-                              color: const Color(0x5500FF00),
-                              borderColor: const Color(0xFF00FF00),
-                              borderStrokeWidth: 2,
-                              useRadiusInMeter: true,
+                        if (notifier.user == null) {
+                          return Container(
+                            color: Colors.grey[100],
+                            alignment: Alignment.center,
+                            child: const Text("Tidak ada koneksi internet"),
+                          );
+                        }
+                        final School? school = notifier.user!.school;
+                        final schoolLocation = LatLng(
+                          school?.lat ?? 0,
+                          school?.lng ?? 0,
+                        );
+                        return FlutterMap(
+                          mapController: _controller,
+                          options: MapOptions(center: schoolLocation, zoom: 18),
+                          nonRotatedChildren: [
+                            AttributionWidget.defaultWidget(
+                              source: 'OpenStreetMap contributors',
+                              onSourceTapped: null,
                             ),
                           ],
-                        ),
-                        MarkerLayer(
-                          markers: _markers,
-                        ),
-                      ],
-                    );
-                  }),
+                          children: [
+                            TileLayer(
+                              urlTemplate:
+                                  'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                              userAgentPackageName: 'com.example.app',
+                            ),
+                            CircleLayer(
+                              circles: [
+                                CircleMarker(
+                                  point: schoolLocation,
+                                  radius: school?.distance?.toDouble() ?? 50,
+                                  color: const Color(0x5500FF00),
+                                  borderColor: const Color(0xFF00FF00),
+                                  borderStrokeWidth: 2,
+                                  useRadiusInMeter: true,
+                                ),
+                              ],
+                            ),
+                            MarkerLayer(
+                              markers: _markers,
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
                 ),
-                _isLoadingLocation
-                    ? const CircularProgressIndicator()
-                    : TextButton(
-                        onPressed: () {
-                          setState(() {
-                            _isLoadingLocation = true;
-                          });
-                          _loadLocation();
-                        },
-                        child: const Text('Update Lokasi'),
-                      ),
+                Text(
+                  _timeString,
+                  style: GoogleFonts.inter(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xff17233D)),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  _dateString,
+                  style: GoogleFonts.inter(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: const Color(0xff17233D)),
+                ),
               ],
             ),
           ),
           Container(
+            height: 40,
             width: double.infinity,
-            margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            child: _isLoadingSubmit || _currentLocation == null
-                ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : ElevatedButton(
-                    child: Text(
-                      widget.clockType == clockInType ? 'MASUK' : 'PULANG',
-                    ),
-                    onPressed: () {
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            child: OutlinedButton(
+              onPressed: _isLoadingLocation || _currentLocation == null
+                  ? null
+                  : () {
                       setState(() {
-                        _isLoadingSubmit = true;
+                        _isLoadingLocation = true;
                       });
-                      if (_currentLocation == null) {
-                        displayMessageDialog(
-                            context, "Lokasi tidak ditemukan.");
-                      } else {
-                        clockNow(
-                          context.read<AuthNotifier>().accessToken ?? "",
-                          widget.clockType,
-                          _currentLocation!.latitude,
-                          _currentLocation!.longitude,
-                        ).then((value) {
-                          if (value.isSuccess()) {
-                            displayMessageDialog(
-                              context,
-                              value.getSuccess() ?? "",
-                              () {
-                                Navigator.popUntil(
-                                    context, (route) => route.isFirst);
-                              },
-                            );
-                          } else {
-                            displayMessageDialog(
-                                context, value.getError() ?? "");
-                          }
-                          setState(() {
-                            _isLoadingSubmit = false;
-                          });
-                        });
-                      }
+                      _loadLocation();
                     },
+              child: _isLoadingLocation || _currentLocation == null
+                  ? const SizedBox(
+                      height: 24,
+                      width: 24,
+                      child: CircularProgressIndicator(),
+                    )
+                  : Text(
+                      'Update Lokasi',
+                      style: GoogleFonts.inter(),
+                    ),
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: _isLoadingSubmit || _currentLocation == null
+                        ? null
+                        : () {
+                            setState(() {
+                              _isLoadingSubmit = true;
+                            });
+                            if (_currentLocation == null) {
+                              displayMessageDialog(
+                                  context, "Lokasi tidak ditemukan.");
+                            } else {
+                              clockNow(
+                                context.read<AuthNotifier>().accessToken ?? "",
+                                clockInType,
+                                _currentLocation!.latitude,
+                                _currentLocation!.longitude,
+                              ).then(
+                                (value) {
+                                  if (value.isSuccess()) {
+                                    displayMessageDialog(
+                                      context,
+                                      value.getSuccess() ?? "",
+                                      () {
+                                        Navigator.popUntil(
+                                          context,
+                                          (route) => route.isFirst,
+                                        );
+                                        Provider.of<AuthNotifier>(context,
+                                                listen: false)
+                                            .loadClockStatus();
+                                      },
+                                    );
+                                  } else {
+                                    displayMessageDialog(
+                                        context, value.getError() ?? "");
+                                  }
+                                  setState(
+                                    () {
+                                      _isLoadingSubmit = false;
+                                    },
+                                  );
+                                },
+                              );
+                            }
+                          },
+                    child: _isLoadingSubmit || _currentLocation == null
+                        ? const SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                          )
+                        : Text(
+                            "Masuk",
+                            style: GoogleFonts.inter(),
+                          ),
                   ),
+                ),
+                const SizedBox(width: 20),
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: _isLoadingSubmit || _currentLocation == null
+                        ? null
+                        : () {
+                            setState(() {
+                              _isLoadingSubmit = true;
+                            });
+                            if (_currentLocation == null) {
+                              displayMessageDialog(
+                                  context, "Lokasi tidak ditemukan.");
+                            } else {
+                              clockNow(
+                                context.read<AuthNotifier>().accessToken ?? "",
+                                clockOutType,
+                                _currentLocation!.latitude,
+                                _currentLocation!.longitude,
+                              ).then(
+                                (value) {
+                                  if (value.isSuccess()) {
+                                    displayMessageDialog(
+                                      context,
+                                      value.getSuccess() ?? "",
+                                      () {
+                                        Navigator.popUntil(
+                                          context,
+                                          (route) => route.isFirst,
+                                        );
+                                        Provider.of<AuthNotifier>(context,
+                                                listen: false)
+                                            .loadClockStatus();
+                                      },
+                                    );
+                                  } else {
+                                    displayMessageDialog(
+                                        context, value.getError() ?? "");
+                                  }
+                                  setState(
+                                    () {
+                                      _isLoadingSubmit = false;
+                                    },
+                                  );
+                                },
+                              );
+                            }
+                          },
+                    child: _isLoadingSubmit || _currentLocation == null
+                        ? const SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                          )
+                        : Text(
+                            "Pulang",
+                            style: GoogleFonts.inter(),
+                          ),
+                  ),
+                ),
+              ],
+            ),
           )
         ],
       ),
