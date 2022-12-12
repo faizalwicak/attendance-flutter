@@ -182,7 +182,7 @@ class _ClockHistoryScreen extends State<ClockHistoryScreen> {
                                       Text(
                                         recordList[index]
                                                 ?.attend
-                                                ?.clockInTime ??
+                                                ?.clockOutTime ??
                                             "-",
                                         style: GoogleFonts.inter(
                                             fontSize: 12,

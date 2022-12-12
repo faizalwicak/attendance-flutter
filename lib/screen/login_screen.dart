@@ -1,6 +1,9 @@
-import 'package:attendance_flutter/constant/color_constant.dart';
+import 'dart:io';
+
 import 'package:attendance_flutter/constant/style_constant.dart';
 import 'package:attendance_flutter/util/dialog_helper.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +22,23 @@ class _LoginScreen extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  String deviceId = "";
+
+  @override
+  void initState() {
+    super.initState();
+
+    DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+
+    if (Platform.isAndroid) {
+      deviceInfoPlugin.androidInfo.then((info) {
+        setState(() {
+          deviceId = info.id;
+        });
+      });
+    } else if (kIsWeb) {}
+  }
+
   var _isLoading = false;
 
   @override
@@ -29,38 +49,41 @@ class _LoginScreen extends State<LoginScreen> {
         child: Column(
           children: [
             Expanded(
-              child: Stack(children: [
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  width: double.infinity,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'DIGITAL ABSENSI',
-                        style: GoogleFonts.inter(
-                          color: const Color(0xff336BB0),
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
+              child: Stack(
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    width: double.infinity,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'DIGITAL ABSENSI',
+                          style: GoogleFonts.inter(
+                            color: const Color(0xff336BB0),
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        'SMAN 1 SLEMAN',
-                        style: GoogleFonts.inter(
-                          color: const Color(0xff336BB0),
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
+                        const SizedBox(height: 5),
+                        Text(
+                          'SMAN 1 SLEMAN',
+                          style: GoogleFonts.inter(
+                            color: const Color(0xff336BB0),
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                Positioned(
-                  right: 0,
-                  child: Image.asset('assets/images/image_login_1.png'),),
-              ],),
+                  Positioned(
+                    right: 0,
+                    child: Image.asset('assets/images/image_login_1.png'),
+                  ),
+                ],
+              ),
             ),
             Container(
               decoration: const BoxDecoration(
@@ -121,6 +144,8 @@ class _LoginScreen extends State<LoginScreen> {
                     title: 'Masuk',
                     isLoading: _isLoading,
                     onClick: () {
+                      // final deviceInfoPlugin = DeviceInfoPlugin();
+                      // if (Platform.isAndroid) {}
                       actionLogin();
                     },
                   ),
@@ -141,6 +166,7 @@ class _LoginScreen extends State<LoginScreen> {
     login(
       _usernameController.text,
       _passwordController.text,
+      deviceId,
     ).then((result) {
       if (result.isSuccess()) {
         Provider.of<AuthNotifier>(

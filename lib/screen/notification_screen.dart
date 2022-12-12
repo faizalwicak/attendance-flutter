@@ -1,5 +1,8 @@
+import 'package:attendance_flutter/api/notification_service.dart';
+import 'package:attendance_flutter/model/notification.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 AppBar notificationAppBar = AppBar(
   title: const Text('Pengumuman'),
@@ -7,45 +10,80 @@ AppBar notificationAppBar = AppBar(
   elevation: 0,
 );
 
-class NotificationScreen extends StatelessWidget {
+class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
 
   @override
+  State<StatefulWidget> createState() => _NotificationScreen();
+}
+
+class _NotificationScreen extends State<NotificationScreen> {
+  List<MNotification> items = [];
+  String jwt = "";
+  bool isLoading = false;
+  var httpError = "";
+
+  @override
+  void initState() {
+    super.initState();
+    SharedPreferences.getInstance().then((prefs) {
+      jwt = prefs.getString('access_token') ?? "";
+      loadNotifications();
+    });
+  }
+
+  void loadNotifications() {
+    setState(() {
+      isLoading = true;
+    });
+    getNotifications(jwt).then((response) {
+      if (response.isSuccess()) {
+        items = response.getSuccess() ?? [];
+      } else {
+        httpError = response.getError() ?? "";
+      }
+      setState(() {
+        isLoading = false;
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (1 == 1) {
+    if (isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (items.isEmpty) {
       return Center(
         child: Text('Belum ada pengumuman.', style: GoogleFonts.inter()),
       );
     }
     return ListView.builder(
-      itemCount: 20,
+      itemCount: items.length,
       itemBuilder: (context, index) {
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Budi Susanto',
-                          style: GoogleFonts.inter(fontWeight: FontWeight.w400),
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          '1235345',
-                          style: GoogleFonts.inter(fontWeight: FontWeight.w200),
-                        ),
-                      ],
-                    ),
+                  Text(
+                    items[index].title ?? "",
+                    style: GoogleFonts.inter(fontWeight: FontWeight.w400),
                   ),
-                  const Text('Sakit'),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    items[index].message ?? "",
+                    style: GoogleFonts.inter(fontWeight: FontWeight.w200),
+                  ),
                 ],
               ),
             ),

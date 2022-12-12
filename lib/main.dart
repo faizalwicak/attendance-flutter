@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:attendance_flutter/constant/color_constant.dart';
 import 'package:attendance_flutter/screen/home_screen.dart';
 import 'package:attendance_flutter/screen/login_screen.dart';
@@ -11,11 +13,21 @@ void main() {
   runApp(const MyApp());
 }
 
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    HttpOverrides.global = MyHttpOverrides();
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthNotifier()),

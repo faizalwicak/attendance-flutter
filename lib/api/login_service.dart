@@ -6,12 +6,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants.dart';
 
-Future<Result<String, String>> login(String username, String password) async {
+Future<Result<String, String>> login(
+    String username, String password, String deviceId) async {
   try {
     final uri = Uri.parse('$baseApiUrl/login');
     final response = await http.post(
       uri,
-      body: {'username': username, 'password': password},
+      body: {'username': username, 'password': password, 'device_id': deviceId},
       headers: {'Accept': 'application/json'},
     ).timeout(httpTimeout);
     if (response.statusCode == 200) {
@@ -26,6 +27,7 @@ Future<Result<String, String>> login(String username, String password) async {
       return Error(response.reasonPhrase.toString());
     }
   } catch (e) {
+    print(e);
     return const Error('Kesalahan Jaringan');
   }
 }
