@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:multiple_result/multiple_result.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants.dart';
+import '../model/message.dart';
 
 Future<Result<String, String>> login(
     String username, String password, String deviceId) async {
@@ -13,7 +15,10 @@ Future<Result<String, String>> login(
     final response = await http.post(
       uri,
       body: {'username': username, 'password': password, 'device_id': deviceId},
-      headers: {'Accept': 'application/json'},
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Accept': 'application/json'
+      },
     ).timeout(httpTimeout);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -22,12 +27,15 @@ Future<Result<String, String>> login(
       return Success(data['access_token']);
     } else if (response.statusCode == 422) {
       final data = json.decode(response.body);
-      return Error(data['message']);
+      final message = Message.fromJson(data);
+      return Error(message.message ?? "");
     } else {
       return Error(response.reasonPhrase.toString());
     }
   } catch (e) {
-    print(e);
-    return const Error('Kesalahan Jaringan');
+    // if (kDebugMode) {
+    return Error(e.toString());
+    // }
+    // return const Error('Kesalahan Jaringan');
   }
 }

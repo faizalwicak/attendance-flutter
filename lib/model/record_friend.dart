@@ -1,6 +1,4 @@
 import 'record.dart';
-import 'grade.dart';
-import 'school.dart';
 
 class RecordFriend {
   final int? id;
@@ -13,7 +11,7 @@ class RecordFriend {
   factory RecordFriend.fromJson(Map<String, dynamic> json) {
     List<Record?> recordsList = [];
     if (json.containsKey('records')) {
-      for(var i in json['records']) {
+      for (var i in json['records']) {
         recordsList.add(Record.fromJson(i));
       }
     }

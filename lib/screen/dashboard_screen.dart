@@ -46,7 +46,7 @@ class _DashboardScreen extends State<DashboardScreen> {
                 icon,
                 const SizedBox(height: 10),
                 Text(
-                  title + '\n',
+                  '$title\n',
                   style: GoogleFonts.inter(
                     color: const Color(0xff808695),
                     fontSize: 10,
@@ -323,7 +323,7 @@ class _DashboardScreen extends State<DashboardScreen> {
                     ));
                   },
                 ),
-                const SizedBox(width: 20),
+                const SizedBox(width: 5),
                 cardItem(
                   'Riwayat Presensi',
                   SvgPicture.asset(
@@ -340,7 +340,7 @@ class _DashboardScreen extends State<DashboardScreen> {
                     );
                   },
                 ),
-                const SizedBox(width: 20),
+                const SizedBox(width: 5),
                 cardItem(
                   'Buat Izin',
                   SvgPicture.asset(
@@ -357,7 +357,7 @@ class _DashboardScreen extends State<DashboardScreen> {
                     );
                   },
                 ),
-                const SizedBox(width: 20),
+                const SizedBox(width: 5),
                 cardItem(
                   'Riwayat Izin',
                   SvgPicture.asset(

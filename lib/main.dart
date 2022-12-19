@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'notifier/auth_notifier.dart';
 
 void main() {
+  HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
 }
 
@@ -27,7 +28,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    HttpOverrides.global = MyHttpOverrides();
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthNotifier()),

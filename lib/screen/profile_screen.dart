@@ -206,9 +206,11 @@ class _ProfileScreen extends State<ProfileScreen> {
                 child: const Text('Ganti Password'),
                 onPressed: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => PasswordScreen()));
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const PasswordScreen(),
+                    ),
+                  );
                 },
               ),
             ),

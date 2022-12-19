@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:attendance_flutter/api/absent_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -41,7 +43,7 @@ class _AbsentHistoryScreen extends State<AbsentHistoryScreen> {
       } else {
         setState(() {
           httpError = value.getError() ?? "";
-          print(httpError);
+          log(httpError);
         });
       }
       setState(() {
@@ -113,7 +115,7 @@ class _AbsentHistoryScreen extends State<AbsentHistoryScreen> {
                                 Text(
                                   items[index].date != null
                                       ? DateFormat("dd-MM-yyyy").format(
-                                          DateTime.parse(items[index]!.date!))
+                                          DateTime.parse(items[index].date!))
                                       : "-",
                                   style: GoogleFonts.inter(
                                       fontSize: 12,

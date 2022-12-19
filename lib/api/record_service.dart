@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:attendance_flutter/model/record_friend.dart';
 import 'package:http/http.dart' as http;
@@ -24,7 +25,7 @@ Future<Result<String, List<RecordFriend>>> getRecordFriend(String jwt) async {
       return Error(response.reasonPhrase.toString());
     }
   } catch (e) {
-    print(e);
+    log(e.toString());
     return const Error('Kesalahan Jaringan');
   }
 }

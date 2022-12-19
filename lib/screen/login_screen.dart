@@ -30,13 +30,19 @@ class _LoginScreen extends State<LoginScreen> {
 
     DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
 
-    if (Platform.isAndroid) {
+    if (kIsWeb) {
+      deviceInfoPlugin.webBrowserInfo.then((info) {
+        deviceId = info.vendor.toString() +
+            info.userAgent.toString() +
+            info.hardwareConcurrency.toString();
+      });
+    } else if (Platform.isAndroid) {
       deviceInfoPlugin.androidInfo.then((info) {
         setState(() {
           deviceId = info.id;
         });
       });
-    } else if (kIsWeb) {}
+    }
   }
 
   var _isLoading = false;
@@ -51,8 +57,12 @@ class _LoginScreen extends State<LoginScreen> {
             Expanded(
               child: Stack(
                 children: [
+                  Positioned(
+                    right: 0,
+                    child: Image.asset('assets/images/image_login_1.png'),
+                  ),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     width: double.infinity,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -77,10 +87,6 @@ class _LoginScreen extends State<LoginScreen> {
                         ),
                       ],
                     ),
-                  ),
-                  Positioned(
-                    right: 0,
-                    child: Image.asset('assets/images/image_login_1.png'),
                   ),
                 ],
               ),

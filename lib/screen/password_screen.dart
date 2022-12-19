@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:attendance_flutter/api/user_service.dart';
 import 'package:attendance_flutter/util/dialog_helper.dart';
 import 'package:flutter/material.dart';

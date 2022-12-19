@@ -25,28 +25,28 @@ class _HomeScreen extends State<HomeScreen> {
         items: [
           BottomNavigationBarItem(
             icon: Padding(
-              padding: EdgeInsets.symmetric(vertical: 5),
+              padding: const EdgeInsets.symmetric(vertical: 5),
               child: SvgPicture.asset('assets/images/icon_category.svg'),
             ),
             label: 'Beranda',
           ),
           BottomNavigationBarItem(
             icon: Padding(
-              padding: EdgeInsets.symmetric(vertical: 5),
+              padding: const EdgeInsets.symmetric(vertical: 5),
               child: SvgPicture.asset('assets/images/icon_clipboard.svg'),
             ),
             label: 'Teman',
           ),
           BottomNavigationBarItem(
             icon: Padding(
-              padding: EdgeInsets.symmetric(vertical: 5),
+              padding: const EdgeInsets.symmetric(vertical: 5),
               child: SvgPicture.asset('assets/images/icon_message_notif.svg'),
             ),
             label: 'Pengumuman',
           ),
           BottomNavigationBarItem(
             icon: Padding(
-              padding: EdgeInsets.symmetric(vertical: 5),
+              padding: const EdgeInsets.symmetric(vertical: 5),
               child: SvgPicture.asset('assets/images/icon_profile.svg'),
             ),
             label: 'Akun',
@@ -73,7 +73,7 @@ class _HomeScreen extends State<HomeScreen> {
         profileAppBar,
       ][_selectedIndex],
       body: [
-        DashboardScreen(),
+        const DashboardScreen(),
         const UsersScreen(),
         const NotificationScreen(),
         const ProfileScreen(),
