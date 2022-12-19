@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:attendance_flutter/model/notification.dart';
 import 'package:http/http.dart' as http;
 import 'package:multiple_result/multiple_result.dart';
+import 'package:flutter/foundation.dart';
 
 import '../constants.dart';
 
@@ -24,7 +25,9 @@ Future<Result<String, List<MNotification>>> getNotifications(String jwt) async {
       return Error(response.reasonPhrase.toString());
     }
   } catch (e) {
-    print(e);
+    if (kDebugMode) {
+      return Error(e.toString());
+    }
     return const Error('Kesalahan Jaringan');
   }
 }

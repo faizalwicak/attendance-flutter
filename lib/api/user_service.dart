@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:multiple_result/multiple_result.dart';
+import 'package:flutter/foundation.dart';
 
 import '../constants.dart';
 import '../model/user.dart';
@@ -25,6 +26,9 @@ Future<Result<String, User>> getUserProfile(String jwt) async {
       return Error(response.reasonPhrase.toString());
     }
   } catch (e) {
+    if (kDebugMode) {
+      return Error(e.toString());
+    }
     return const Error('Kesalahan Jaringan');
   }
 }
@@ -54,6 +58,9 @@ Future<Result<String, String>> changePassword(String jwt, String oldPassword,
       return Error(response.reasonPhrase.toString());
     }
   } catch (e) {
+    if (kDebugMode) {
+      return Error(e.toString());
+    }
     return const Error('Kesalahan Jaringan');
   }
 }
@@ -84,6 +91,9 @@ Future<Result<String, String>> changeProfilePicture(
       return Error(response.reasonPhrase.toString());
     }
   } catch (e) {
+    if (kDebugMode) {
+      return Error(e.toString());
+    }
     return const Error('Kesalahan Jaringan');
   }
 }

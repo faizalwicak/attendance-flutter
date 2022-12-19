@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:multiple_result/multiple_result.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/foundation.dart';
 
 import '../constants.dart';
 import '../model/message.dart';
@@ -33,9 +33,10 @@ Future<Result<String, String>> login(
       return Error(response.reasonPhrase.toString());
     }
   } catch (e) {
-    // if (kDebugMode) {
-    return Error(e.toString());
-    // }
-    // return const Error('Kesalahan Jaringan');
+    if (kDebugMode) {
+      return Error(e.toString());
+    }
+
+    return const Error('Kesalahan Jaringan');
   }
 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:multiple_result/multiple_result.dart';
+import 'package:flutter/foundation.dart';
 
 import '../constants.dart';
 import '../model/message.dart';
@@ -35,11 +36,12 @@ Future<Result<String, String>> clockNow(
       final message = Message.fromJson(data);
       return Error(message.message ?? "");
     } else {
-      print(response.body);
       return Error(response.reasonPhrase.toString());
     }
   } catch (e) {
-    print(e);
+    if (kDebugMode) {
+      return Error(e.toString());
+    }
     return const Error('Kesalahan Jaringan');
   }
 }
@@ -58,7 +60,9 @@ Future<Result<String, Record?>> getClockStatus(String jwt) async {
       return Error(response.reasonPhrase.toString());
     }
   } catch (e) {
-    print(e);
+    if (kDebugMode) {
+      return Error(e.toString());
+    }
     return const Error('Kesalahan Jaringan');
   }
 }
@@ -70,7 +74,6 @@ Future<Result<String, List<Record?>>> getClockHistory(
 ) async {
   try {
     String params = "?year=$year&month=$month";
-    print(params);
     final uri = Uri.parse('$baseApiUrl/clock-history$params');
     final response = await http.get(
       uri,
@@ -82,17 +85,18 @@ Future<Result<String, List<Record?>>> getClockHistory(
       for (var i in data) {
         if (i != null) {
           responseArray.add(Record.fromJson(i));
-          print(i);
         } else {
           responseArray.add(null);
         }
-      };
+      }
       return Success(responseArray);
     } else {
       return Error(response.reasonPhrase.toString());
     }
   } catch (e) {
-    print(e);
+    if (kDebugMode) {
+      return Error(e.toString());
+    }
     return const Error('Kesalahan Jaringan');
   }
 }
