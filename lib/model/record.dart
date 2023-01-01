@@ -7,6 +7,7 @@ class Record {
   final String? date;
   final Attend? attend;
   final Leave? leave;
+  final bool? isLeave;
 
   Record({
     this.id,
@@ -14,6 +15,7 @@ class Record {
     this.date,
     this.attend,
     this.leave,
+    this.isLeave,
   });
 
   factory Record.fromJson(Map<String, dynamic> json) {
@@ -33,6 +35,7 @@ class Record {
       date: json['date'],
       attend: attend,
       leave: leave,
+      isLeave: json['is_leave'] == 1,
     );
   }
 
@@ -42,7 +45,8 @@ class Record {
       'user_id': userId,
       'date': date,
       'attend': attend?.toJson(),
-      'leave': leave?.toJson()
+      'leave': leave?.toJson(),
+      'is_leave': (isLeave ?? false) ? 1 : 0,
     };
   }
 }

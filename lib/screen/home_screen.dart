@@ -6,6 +6,9 @@ import 'package:attendance_flutter/screen/users_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+
+import '../notifier/auth_notifier.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -38,9 +41,48 @@ class _HomeScreen extends State<HomeScreen> {
             label: 'Teman',
           ),
           BottomNavigationBarItem(
-            icon: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5),
-              child: SvgPicture.asset('assets/images/icon_message_notif.svg'),
+            icon: Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 5,
+                    horizontal: 5,
+                  ),
+                  child: SvgPicture.asset(
+                    'assets/images/icon_message_notif.svg',
+                  ),
+                ),
+                Consumer<AuthNotifier>(builder: (context, notifier, child) {
+                  if ((notifier.user?.notifications ?? 0) == 0) {
+                    return const SizedBox(
+                      width: 0,
+                      height: 0,
+                    );
+                  }
+                  return Positioned(
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(1),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      constraints: const BoxConstraints(
+                        minWidth: 12,
+                        minHeight: 12,
+                      ),
+                      child: Text(
+                        notifier.user?.notifications?.toString() ?? "0",
+                        style: GoogleFonts.inter(
+                          fontSize: 8,
+                          color: Colors.white,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  );
+                }),
+              ],
             ),
             label: 'Pengumuman',
           ),

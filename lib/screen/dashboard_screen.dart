@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../constant/color_constant.dart';
 import '../constants.dart';
@@ -81,150 +82,98 @@ class _DashboardScreen extends State<DashboardScreen> {
         children: [
           Stack(
             children: [
-              Container(
-                color: primaryColor,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.only(
-                          top: 100,
-                          left: 20,
-                          right: 20,
-                          bottom: 40,
-                        ),
-                        child: Consumer<AuthNotifier>(
-                          builder: (context, notifier, child) {
-                            if (notifier.user == null) {
-                              return Shimmer.fromColors(
-                                baseColor: Colors.white.withAlpha(100),
-                                highlightColor: Colors.blue.withAlpha(100),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(6),
-                                      child: Container(
-                                        color: Colors.white,
-                                        height: 14,
-                                        width: 150,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 15),
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(6),
-                                      child: Container(
-                                        color: Colors.white,
-                                        height: 18,
-                                        width: 200,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(6),
-                                      child: Container(
-                                        color: Colors.white,
-                                        height: 14,
-                                        width: 100,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  notifier.user?.school?.name ?? "memuat . . .",
-                                  style: GoogleFonts.inter(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                const SizedBox(height: 15),
-                                Text(
-                                  notifier.user?.name ?? "",
-                                  style: GoogleFonts.inter(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  notifier.user?.grade?.name ?? "",
-                                  style: GoogleFonts.inter(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
+              Positioned.fill(
+                child: Container(
+                  color: primaryColor,
+                  child: ColorFiltered(
+                    colorFilter: ColorFilter.mode(
+                        Colors.black.withOpacity(0.4), BlendMode.dstATop),
+                    child: Consumer<AuthNotifier>(builder: (
+                      context,
+                      notifier,
+                      child,
+                    ) {
+                      if (notifier.user == null) {
+                        return Container();
+                        // return Image.asset(
+                        //   'assets/images/image_login_1.png',
+                        //   height: 150,
+                        //   fit: BoxFit.fitHeight,
+                        // );
+                      }
+                      return CachedNetworkImage(
+                        imageUrl:
+                            '$baseUrl/images/${notifier.user?.school?.imageBackground}',
+                        placeholder: (context, url) => Container(),
+                        errorWidget: (context, url, err) => Container(),
+                        fit: BoxFit.cover,
+                      );
+                    }),
+                  ),
+                ),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.only(
+                        top: 80,
+                        left: 20,
+                        right: 20,
+                        bottom: 40,
                       ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 80),
-                      width: 80,
-                      height: 150,
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: Image.asset(
-                              'assets/images/image_login_1.png',
-                              height: 150,
-                              fit: BoxFit.fitHeight,
-                            ),
-                          ),
-                          Positioned(
-                            top: 0,
-                            bottom: 0,
-                            child: Consumer<AuthNotifier>(builder: (
-                              context,
-                              notifier,
-                              child,
-                            ) {
-                              if (notifier.user == null) {
-                                return Center(
-                                  child: Shimmer.fromColors(
-                                    baseColor: Colors.white.withAlpha(200),
-                                    highlightColor: Colors.blue.withAlpha(200),
-                                    child: SizedBox(
-                                      height: 60,
-                                      width: 60,
-                                      child: CircleAvatar(
-                                        backgroundColor:
-                                            const Color(0xFF35415A),
-                                        child: Text(
-                                          getInitials(
-                                              notifier.user?.name ?? ""),
-                                          style: GoogleFonts.inter(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 24,
-                                          ),
-                                        ),
-                                      ),
+                      child: Consumer<AuthNotifier>(
+                        builder: (context, notifier, child) {
+                          if (notifier.user == null) {
+                            return Shimmer.fromColors(
+                              baseColor: Colors.white.withAlpha(100),
+                              highlightColor: Colors.blue.withAlpha(100),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(6),
+                                    child: Container(
+                                      color: Colors.white,
+                                      height: 14,
+                                      width: 150,
                                     ),
                                   ),
-                                );
-                              }
-                              if (notifier.user?.image != null) {
-                                return Center(
-                                  child: ClipOval(
+                                  const SizedBox(height: 15),
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(6),
+                                    child: Container(
+                                      color: Colors.white,
+                                      height: 18,
+                                      width: 200,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(6),
+                                    child: Container(
+                                      color: Colors.white,
+                                      height: 14,
+                                      width: 100,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  ClipOval(
                                     child: CachedNetworkImage(
-                                      height: 60,
-                                      width: 60,
+                                      height: 40,
+                                      width: 40,
                                       imageUrl:
-                                          '$baseUrl/images/${notifier.user?.image}',
+                                          '$baseUrl/images/${notifier.user?.school?.image}',
                                       placeholder: (context, url) => Container(
                                         width: 60,
                                         height: 60,
@@ -249,7 +198,7 @@ class _DashboardScreen extends State<DashboardScreen> {
                                         alignment: Alignment.center,
                                         child: Text(
                                           getInitials(
-                                            notifier.user?.name ?? "",
+                                            notifier.user?.school?.name ?? "",
                                           ),
                                           style: GoogleFonts.inter(
                                             color: Colors.white,
@@ -260,31 +209,151 @@ class _DashboardScreen extends State<DashboardScreen> {
                                       ),
                                     ),
                                   ),
-                                );
-                              }
-
-                              return SizedBox(
-                                height: 60,
-                                width: 60,
-                                child: CircleAvatar(
-                                  backgroundColor: const Color(0xFF35415A),
-                                  child: Text(
-                                    getInitials(notifier.user?.name ?? ""),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    notifier.user?.school?.name ??
+                                        "memuat . . .",
                                     style: GoogleFonts.inter(
                                       color: Colors.white,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 24,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 15),
+                              Text(
+                                notifier.user?.name ?? "",
+                                style: GoogleFonts.inter(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              const SizedBox(height: 5),
+                              Text(
+                                notifier.user?.grade?.name ?? "",
+                                style: GoogleFonts.inter(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 80),
+                    width: 80,
+                    height: 150,
+                    child: Stack(
+                      children: [
+                        // Positioned(
+                        //   bottom: 0,
+                        //   right: 0,
+                        //   child: ,
+                        // ),
+                        Positioned(
+                          top: 0,
+                          bottom: 0,
+                          child: Consumer<AuthNotifier>(builder: (
+                            context,
+                            notifier,
+                            child,
+                          ) {
+                            if (notifier.user == null) {
+                              return Center(
+                                child: Shimmer.fromColors(
+                                  baseColor: Colors.white.withAlpha(200),
+                                  highlightColor: Colors.blue.withAlpha(200),
+                                  child: SizedBox(
+                                    height: 60,
+                                    width: 60,
+                                    child: CircleAvatar(
+                                      backgroundColor: const Color(0xFF35415A),
+                                      child: Text(
+                                        getInitials(notifier.user?.name ?? ""),
+                                        style: GoogleFonts.inter(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 24,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
                               );
-                            }),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                            }
+                            if (notifier.user?.image != null) {
+                              return Center(
+                                child: ClipOval(
+                                  child: CachedNetworkImage(
+                                    height: 60,
+                                    width: 60,
+                                    imageUrl:
+                                        '$baseUrl/images/${notifier.user?.image}',
+                                    placeholder: (context, url) => Container(
+                                      width: 60,
+                                      height: 60,
+                                      color: const Color(0xFF35415A),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        getInitials(
+                                          notifier.user?.name ?? "",
+                                        ),
+                                        style: GoogleFonts.inter(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 24,
+                                        ),
+                                      ),
+                                    ),
+                                    errorWidget: (context, url, err) =>
+                                        Container(
+                                      width: 60,
+                                      height: 60,
+                                      color: const Color(0xFF35415A),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        getInitials(
+                                          notifier.user?.name ?? "",
+                                        ),
+                                        style: GoogleFonts.inter(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 24,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+
+                            return SizedBox(
+                              height: 60,
+                              width: 60,
+                              child: CircleAvatar(
+                                backgroundColor: const Color(0xFF35415A),
+                                child: Text(
+                                  getInitials(notifier.user?.name ?? ""),
+                                  style: GoogleFonts.inter(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 24,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
               ),
             ],
           ),
@@ -437,9 +506,9 @@ class _DashboardScreen extends State<DashboardScreen> {
                               ),
                             );
                           }
-                          if (notifier.quote != null) {
+                          if (notifier.user != null) {
                             return Text(
-                              notifier.quote?.message ?? "",
+                              notifier.user?.quote?.message ?? "",
                               style: GoogleFonts.inter(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w400,
@@ -532,20 +601,33 @@ class _DashboardScreen extends State<DashboardScreen> {
                             );
                           }
                           if (notifier.clockStatus != null) {
-                            if (notifier.clockStatus!.attend?.clockInTime !=
-                                null) {
-                              message.add(
-                                  "Anda sudah presensi masuk pada ${notifier.clockStatus!.attend!.clockInTime}");
+                            if (notifier.clockStatus!.isLeave ?? false) {
+                              if (notifier.clockStatus!.leave?.leaveStatus ==
+                                  'WAITING') {
+                                message
+                                    .add("Menunggu izin diterima oleh admin.");
+                              } else if (notifier
+                                      .clockStatus!.leave?.leaveStatus ==
+                                  'ACCEPT') {
+                                message.add("Izin anda diterima.");
+                              } else {
+                                message.add("Izin anda ditolak.");
+                              }
+                            } else {
+                              if (notifier.clockStatus!.attend?.clockInTime !=
+                                  null) {
+                                message.add(
+                                    "Anda sudah presensi masuk pada ${notifier.clockStatus!.attend!.clockInTime}");
+                              }
+                              if (notifier.clockStatus!.attend?.clockOutTime !=
+                                  null) {
+                                message.add(
+                                    "Anda sudah presensi pulang pada ${notifier.clockStatus!.attend!.clockOutTime}");
+                              }
+                              if (message.isEmpty) {
+                                message.add("Anda belum presensi.");
+                              }
                             }
-                            if (notifier.clockStatus!.attend?.clockOutTime !=
-                                null) {
-                              message.add(
-                                  "Anda sudah presensi pulang pada ${notifier.clockStatus!.attend!.clockOutTime}");
-                            }
-                            if (message.isEmpty) {
-                              message.add("Anda belum presensi.");
-                            }
-
                             return Text(
                               message.join("\n"),
                               style: GoogleFonts.inter(
@@ -556,6 +638,112 @@ class _DashboardScreen extends State<DashboardScreen> {
                           }
                           return Text(
                             'Tidak dapat terhubung dengan server.',
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: const Color(0xffDCDEE2)),
+              color: const Color(0xffF8F8F9),
+            ),
+            margin: const EdgeInsets.only(
+              left: 20,
+              right: 20,
+              bottom: 20,
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Link Penting',
+                        style: GoogleFonts.inter(
+                            fontSize: 12, fontWeight: FontWeight.w500),
+                      ),
+                      const SizedBox(height: 10),
+                      Consumer<AuthNotifier>(
+                        builder: (
+                          context,
+                          notifier,
+                          child,
+                        ) {
+                          if (notifier.user == null) {
+                            return Shimmer.fromColors(
+                              baseColor: Colors.grey.withAlpha(50),
+                              highlightColor: Colors.grey.withAlpha(100),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(6),
+                                    child: Container(
+                                      color: Colors.white,
+                                      height: 14,
+                                      width: 150,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(6),
+                                    child: Container(
+                                      color: Colors.white,
+                                      height: 14,
+                                      width: 160,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(6),
+                                    child: Container(
+                                      color: Colors.white,
+                                      height: 14,
+                                      width: 130,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                          if (notifier.user != null) {
+                            return Column(
+                              children: notifier.user!.links!
+                                  .map<Widget>(
+                                    (link) => InkWell(
+                                      onTap: () async {
+                                        var uri = Uri.parse(link.link ?? "");
+                                        if (await canLaunchUrl(uri)) {
+                                          await launchUrl(uri);
+                                        }
+                                      },
+                                      child: Text(
+                                        "- ${link.title ?? ""} (${link.link ?? ""})",
+                                        style: GoogleFonts.inter(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
+                            );
+                          }
+                          return Text(
+                            '-',
                             style: GoogleFonts.inter(
                               fontSize: 12,
                               fontWeight: FontWeight.w400,

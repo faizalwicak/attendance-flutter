@@ -1,3 +1,5 @@
+import 'package:attendance_flutter/model/quote.dart';
+
 class School {
   final int? id;
   final String? name;
@@ -6,6 +8,8 @@ class School {
   final int? distance;
   final DateTime? clockIn;
   final DateTime? clockOut;
+  final String? image;
+  final String? imageBackground;
 
   School({
     this.id,
@@ -15,6 +19,8 @@ class School {
     this.distance,
     this.clockIn,
     this.clockOut,
+    this.image,
+    this.imageBackground,
   });
 
   factory School.fromJson(Map<String, dynamic> json) {
@@ -26,6 +32,8 @@ class School {
       distance: json['distance'],
       clockIn: null,
       clockOut: null,
+      image: json['image'],
+      imageBackground: json['image_background'],
     );
   }
 
@@ -36,6 +44,8 @@ class School {
       'lat': lat.toString(),
       'lng': lng.toString(),
       'distance': distance,
+      'image': image,
+      'image_background': imageBackground,
     };
   }
 }

@@ -2,7 +2,10 @@ import 'package:attendance_flutter/api/notification_service.dart';
 import 'package:attendance_flutter/model/notification.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../notifier/auth_notifier.dart';
 
 AppBar notificationAppBar = AppBar(
   title: const Text('Pengumuman'),
@@ -39,6 +42,7 @@ class _NotificationScreen extends State<NotificationScreen> {
     getNotifications(jwt).then((response) {
       if (response.isSuccess()) {
         items = response.getSuccess() ?? [];
+        Provider.of<AuthNotifier>(context, listen: false).freshLoadUser();
       } else {
         httpError = response.getError() ?? "";
       }

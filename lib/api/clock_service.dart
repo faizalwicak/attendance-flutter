@@ -61,6 +61,7 @@ Future<Result<String, Record?>> getClockStatus(String jwt) async {
     }
   } catch (e) {
     if (kDebugMode) {
+      print(e.toString());
       return Error(e.toString());
     }
     return const Error('Kesalahan Jaringan');

@@ -1,8 +1,6 @@
 import 'dart:convert';
 
 import 'package:attendance_flutter/api/clock_service.dart';
-import 'package:attendance_flutter/api/quote_service.dart';
-import 'package:attendance_flutter/model/quote.dart';
 import 'package:attendance_flutter/util/shared_preference_helper.dart';
 import 'package:flutter/material.dart';
 
@@ -19,9 +17,6 @@ class AuthNotifier extends ChangeNotifier {
 
   Record? _clockStatus;
   Record? get clockStatus => _clockStatus;
-
-  Quote? _quote;
-  Quote? get quote => _quote;
 
   String _httpError = "";
   String get httpError => _httpError;
@@ -57,7 +52,6 @@ class AuthNotifier extends ChangeNotifier {
           _user = User.fromJson(json.decode(value));
         });
       }
-      loadQuote();
       notifyListeners();
     });
   }
@@ -73,20 +67,6 @@ class AuthNotifier extends ChangeNotifier {
     });
   }
 
-  void loadQuote() {
-    getQuote(_accessToken ?? "").then((value) {
-      if (value.isSuccess()) {
-        _quote = value.getSuccess();
-        setStringPref(keyQuote, json.encode(_quote?.toJson()));
-      } else {
-        getStringPref(keyQuote).then((value) {
-          _quote = Quote.fromJson(json.decode(value));
-        });
-      }
-      notifyListeners();
-    });
-  }
-
   void login(String token) {
     _accessToken = token;
     loadUser();
@@ -97,7 +77,6 @@ class AuthNotifier extends ChangeNotifier {
     clearPref().then((value) {
       _accessToken = '';
       _user = null;
-      _quote = null;
       _clockStatus = null;
       notifyListeners();
     });
