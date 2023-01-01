@@ -1,5 +1,3 @@
-import 'package:attendance_flutter/model/quote.dart';
-
 class School {
   final int? id;
   final String? name;
