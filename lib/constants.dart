@@ -26,4 +26,4 @@ const monthName = [
   "Des",
 ];
 
-const httpTimeout = Duration(seconds: 5);
+const httpTimeout = Duration(seconds: 20);

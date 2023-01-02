@@ -42,6 +42,12 @@ class _LoginScreen extends State<LoginScreen> {
           deviceId = info.id;
         });
       });
+    } else if (Platform.isIOS) {
+      deviceInfoPlugin.iosInfo.then((info) {
+        setState(() {
+          deviceId = info.identifierForVendor ?? "";
+        });
+      });
     }
   }
 
