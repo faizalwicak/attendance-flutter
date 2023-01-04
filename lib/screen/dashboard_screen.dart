@@ -174,6 +174,7 @@ class _DashboardScreen extends State<DashboardScreen> {
                                       width: 40,
                                       imageUrl:
                                           '$baseUrl/images/${notifier.user?.school?.image}',
+                                      fit: BoxFit.fill,
                                       placeholder: (context, url) => Container(
                                         width: 60,
                                         height: 60,
@@ -293,6 +294,7 @@ class _DashboardScreen extends State<DashboardScreen> {
                                   child: CachedNetworkImage(
                                     height: 60,
                                     width: 60,
+                                    fit: BoxFit.fill,
                                     imageUrl:
                                         '$baseUrl/images/${notifier.user?.image}',
                                     placeholder: (context, url) => Container(

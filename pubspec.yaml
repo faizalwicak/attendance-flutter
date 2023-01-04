@@ -55,6 +55,7 @@ dependencies:
   flutter_web_frame: ^0.0.3
   url_launcher: ^6.1.7
   flutter_launcher_icons: ^0.11.0
+  image_cropper: ^3.0.1
 
 dev_dependencies:
   flutter_test:

@@ -1,9 +1,11 @@
 import 'package:attendance_flutter/api/user_service.dart';
+import 'package:attendance_flutter/constant/color_constant.dart';
 import 'package:attendance_flutter/constant/style_constant.dart';
 import 'package:attendance_flutter/screen/password_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -60,6 +62,7 @@ class _ProfileScreen extends State<ProfileScreen> {
                               width: 100,
                               height: 100,
                               imageUrl: '$baseUrl/images/${value.user?.image}',
+                              fit: BoxFit.fill,
                               placeholder: (context, url) => Container(
                                 width: 100,
                                 height: 100,
@@ -112,26 +115,52 @@ class _ProfileScreen extends State<ProfileScreen> {
                     final ImagePicker picker = ImagePicker();
                     picker.pickImage(source: ImageSource.gallery).then((image) {
                       if (image != null) {
-                        setState(() {
-                          _isLoading = true;
-                        });
-                        changeProfilePicture(_jwt, image.path).then((res) {
-                          if (res.isSuccess()) {
-                            displayMessageDialog(
-                              context,
-                              res.getSuccess() ?? "",
-                            );
-                            Provider.of<AuthNotifier>(context, listen: false)
-                                .freshLoadUser();
-                          } else {
-                            displayMessageDialog(
-                              context,
-                              res.getError() ?? "",
-                            );
+                        ImageCropper().cropImage(
+                          sourcePath: image.path,
+                          aspectRatioPresets: [
+                            CropAspectRatioPreset.square,
+                          ],
+                          uiSettings: [
+                            AndroidUiSettings(
+                                toolbarTitle: 'Sesuaikan Gambar',
+                                toolbarColor: primaryColor,
+                                toolbarWidgetColor: Colors.white,
+                                initAspectRatio: CropAspectRatioPreset.original,
+                                lockAspectRatio: false),
+                            IOSUiSettings(
+                              title: 'Cropper',
+                            ),
+                            WebUiSettings(
+                              context: context,
+                            ),
+                          ],
+                        ).then((cropped) {
+                          if (cropped != null) {
+                            setState(() {
+                              _isLoading = true;
+                            });
+                            changeProfilePicture(_jwt, cropped.path)
+                                .then((res) {
+                              if (res.isSuccess()) {
+                                displayMessageDialog(
+                                  context,
+                                  res.getSuccess() ?? "",
+                                );
+                                Provider.of<AuthNotifier>(
+                                  context,
+                                  listen: false,
+                                ).freshLoadUser();
+                              } else {
+                                displayMessageDialog(
+                                  context,
+                                  res.getError() ?? "",
+                                );
+                              }
+                              setState(() {
+                                _isLoading = false;
+                              });
+                            });
                           }
-                          setState(() {
-                            _isLoading = false;
-                          });
                         });
                       }
                     });
