@@ -3,8 +3,10 @@ version: '3'
 services:
 
   webserver:
-    build: 
-      context: .
+    container_name: webserver-flutter
+    image: nginx:1.23-alpine
     restart: unless-stopped
     ports:
       - 8080:80
+    volumes:
+      - ./:/usr/share/nginx/html
