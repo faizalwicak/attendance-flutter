@@ -95,11 +95,6 @@ class _DashboardScreen extends State<DashboardScreen> {
                     ) {
                       if (notifier.user == null) {
                         return Container();
-                        // return Image.asset(
-                        //   'assets/images/image_login_1.png',
-                        //   height: 150,
-                        //   fit: BoxFit.fitHeight,
-                        // );
                       }
                       return CachedNetworkImage(
                         imageUrl:
@@ -252,11 +247,6 @@ class _DashboardScreen extends State<DashboardScreen> {
                     height: 150,
                     child: Stack(
                       children: [
-                        // Positioned(
-                        //   bottom: 0,
-                        //   right: 0,
-                        //   child: ,
-                        // ),
                         Positioned(
                           top: 0,
                           bottom: 0,
@@ -377,7 +367,6 @@ class _DashboardScreen extends State<DashboardScreen> {
             margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
-              // mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
               children: [
                 cardItem(
@@ -508,7 +497,8 @@ class _DashboardScreen extends State<DashboardScreen> {
                               ),
                             );
                           }
-                          if (notifier.user != null) {
+                          if (notifier.user != null &&
+                              notifier.user!.quote != null) {
                             return Text(
                               notifier.user?.quote?.message ?? "",
                               style: GoogleFonts.inter(
@@ -529,7 +519,10 @@ class _DashboardScreen extends State<DashboardScreen> {
                     ],
                   ),
                 ),
-                Image.asset('assets/images/image_quote.png'),
+                Image.asset(
+                  'assets/images/image_quote.png',
+                  width: 60,
+                ),
               ],
             ),
           ),
