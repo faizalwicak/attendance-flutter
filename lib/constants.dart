@@ -1,7 +1,8 @@
 // const String baseUrl = "http://192.168.1.10:8000/api";
 // const String baseUrl = "http://192.168.220.44:8000";
 
-const String baseUrl = "https://180.214.246.117";
+// const String baseUrl = "https://180.214.246.117";
+const String baseUrl = "https://202.91.10.142";
 const String baseApiUrl = "$baseUrl/api";
 const dayName = [
   "Senin",
